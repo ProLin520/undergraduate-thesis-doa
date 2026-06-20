@@ -1,6 +1,6 @@
 # 基于深度学习的波达方向估计算法研究
 
-本仓库是本科毕业设计《基于深度学习的波达方向估计算法研究》的代码工程，主要用于复现论文中的 DOA（Direction of Arrival，波达方向）估计算法仿真、深度学习模型训练与毫米波雷达实测验证。
+本仓库是本科毕业设计《基于深度学习的波达方向估计算法研究》的代码工程，主要用于论文中的 DOA（Direction of Arrival，波达方向）估计算法仿真、深度学习模型训练与毫米波雷达实测验证。
 
 论文 PDF 已放在：
 
@@ -78,54 +78,26 @@ Graduation/
 ### 1. 传统算法仿真
 
 传统算法不需要训练模型，可直接运行 `test/tradition/` 下的脚本。
-
-```powershell
-python test\tradition\SNR_Evaluation.py
-python test\tradition\Snapshots_Evaluation.py
-python test\tradition\Separation_Evaluation.py
-```
-
 这些脚本用于测试 MUSIC、ESPRIT 等算法在不同 SNR、快拍数、信源角度间隔、相干信源和欠定场景下的性能。
 
 ### 2. BPSK 数据域实验
 
-BPSK 数据域通常先生成离线数据，再训练和测试模型。
-
-```powershell
-python data\data_create\Generate_IQ_Data.py
-python data\data_create\Generate_IQ_SCMData.py
-python train\bpsk\train_IQ_ResNet.py
-python test\test_IQ_ResNet_single_angle.py
-```
-
+BPSK 数据域通常先运行`data\data_create\Generate_IQ_Data.py`生成离线数据，再运行`train/bpsk/`训练模型和`test`测试。
 BPSK 数据域主要包含单信源、双信源和七信源场景，模型包括 IQ-ResNet、ViT、CNN、MLP 及迁移学习模型。
 
 ### 3. 高斯数据域实验
 
-高斯数据域多数脚本采用在线重采样方式，不需要提前保存完整训练集。
-
-```powershell
-python train\gauss\train_Trans_ThreeSource.py
-python test\test_snr_three_gauss.py
-```
-
+高斯数据域多数脚本采用在线重采样方式其代码在`data/data_create/`，不需要提前保存完整训练集。再运行`train/gauss/`训练模型和`test`测试。
 高斯数据域主要测试 IQ-ResNet、ViT、REG-CNN、SPE-CNN、Learning-SPICE 和 MUSIC 在单信源、三信源、七信源场景下的表现。
 
 ### 4. 毫米波雷达实测实验
 
-实测实验对应论文第五章。采集到 DCA1000 原始 `.bin` 文件后，需要确认脚本中的数据路径和雷达参数，再运行：
-
-```powershell
-python test\test_frame80.py
-python test\test_frame100_summary.py
-```
-
+实测实验对应论文第五章。采集到 DCA1000 原始 `.bin` 文件后，需要先进行`radar_utils.py`的数据预处理，再运行测试代码
 其中 `test_frame80.py` 用于单帧可视化对比，`test_frame100_summary.py` 用于统计 100 帧平均偏差和标准差。
 
 ## 实测硬件平台
 
 实测平台由以下部分组成：
-
 | 硬件/软件 | 作用 |
 | --- | --- |
 | IWR1443BOOST ES3.0 EVM | 毫米波雷达前端，完成信号发射、接收和 ADC 采样 |
@@ -135,13 +107,11 @@ python test\test_frame100_summary.py
 | USB/UART | PC 与 IWR1443BOOST 通信，完成固件下载和雷达配置 |
 
 DCA1000 采集前需要将 PC 网卡设置为：
-
 - 静态 IP：`192.168.33.30`
 - 子网掩码：`255.255.255.0`
 - DCA1000 FPGA 默认 IP：`192.168.33.180`
 
 实测数据处理流程为：
-
 1. 读取 DCA1000 生成的 `.bin` 原始数据。
 2. 重排为 `frame/chirp/rx/sample` 数据立方体。
 3. 执行 Range FFT。
@@ -153,7 +123,7 @@ DCA1000 采集前需要将 PC 网卡设置为：
 ## 常见注意事项
 
 - 建议直接打开 `Graduation/` 作为 VS Code 工作区，避免看到外层仓库的 Git 状态。
-- 运行脚本前确认当前工作目录为 `Graduation/`。
+- 运行脚本前确认当前工作目录为 `Graduation/`注意训练和测试的路径。
 - 如果找不到数据或权重，先检查 `data/` 和 `result/` 下是否已经生成对应文件。
 - 如果 CUDA 不可用，可将脚本中的 `device` 改为 `cpu`，但训练速度会明显变慢。
 - 迁移学习脚本依赖已有基模型权重，不能在没有基模型的情况下单独运行。
