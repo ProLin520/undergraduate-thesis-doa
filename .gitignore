@@ -1,0 +1,47 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments and local tooling
+.venv/
+venv/
+env/
+.env
+.idea/
+.vscode/
+*.iml
+
+# Datasets and raw/generated data
+data/IQ_Data/
+data/ViT/
+data/raw/
+*.npy
+*.npz
+*.bin
+
+# Model weights and training artifacts
+*.pth
+*.pt
+*.h5
+*.pkl
+*.onnx
+*.ckpt
+*.tfevents*
+
+# Experiment outputs
+result/
+results/
+runs/
+run/
+logs/
+wandb/
+checkpoints/
+
+# Temporary and OS files
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+*.bak
+*.swp
